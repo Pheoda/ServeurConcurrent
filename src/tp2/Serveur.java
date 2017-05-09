@@ -13,8 +13,9 @@ public class Serveur implements Runnable {
 
     public Serveur() throws IOException {
         boolean foundPort = false;
+		  
         connexions = new ArrayList<Connexion>();
-        
+
         for(port = 1024; port <= 65535 && !foundPort; port++)
         {
             try {
@@ -23,7 +24,6 @@ public class Serveur implements Runnable {
                 System.out.println("Port trouvé : " + port);
             } catch (IOException e) {
             }
-            port++;
         }
         System.out.println("Serveur initialisé au port : " + port);
 
