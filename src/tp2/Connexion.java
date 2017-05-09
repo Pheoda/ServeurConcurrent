@@ -9,11 +9,12 @@ import java.util.logging.Logger;
 
 public class Connexion implements Runnable {
 
-    DatagramSocket socket;
+    private DatagramSocket socket;
 
     public Connexion(InetAddress adresse, int port) throws IOException {
         socket = new DatagramSocket();
-        byte[] data = "Connexion client".getBytes();
+        String text = "Connexion client : " + adresse + ":" + port;
+        byte[] data = text.getBytes();
         socket.send(new DatagramPacket(data, data.length, adresse, port));
     }
 
@@ -29,5 +30,9 @@ public class Connexion implements Runnable {
             }
             System.out.println(new String(data));
         }
+    }
+    
+    public void fermer() {
+        socket.close();
     }
 }
