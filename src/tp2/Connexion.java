@@ -13,7 +13,8 @@ public class Connexion implements Runnable {
 
     public Connexion(InetAddress adresse, int port) throws IOException {
         socket = new DatagramSocket();
-        byte[] data = "Connexion client".getBytes();
+        String text = "Connexion client : " + adresse + ":" + port;
+        byte[] data = text.getBytes();
         socket.send(new DatagramPacket(data, data.length, adresse, port));
     }
 

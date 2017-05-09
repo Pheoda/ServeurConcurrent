@@ -13,15 +13,13 @@ public class Serveur implements Runnable {
         boolean foundPort = false;
         port = 1024;
 
-        while (port < 8888 && !foundPort) {
-            ServerSocket test = null;
+        for(port = 1024; port <= 65535 && !foundPort; port++)
+        {
             try {
-                test = new ServerSocket(port);
+                ServerSocket test = new ServerSocket(port);
                 foundPort = true;
             } catch (IOException e) {
-                test.close();
-                foundPort = false;
-                port++;
+                
             }
         }
         System.out.println("Serveur initialisé au port : " + port);
@@ -42,8 +40,8 @@ public class Serveur implements Runnable {
                 DatagramPacket p = new DatagramPacket(data, data.length);
                 socket.receive(p);
                 
-                System.out.println("Adresse : " + p.getAddress());
-                System.out.println("Port : " + p.getPort());
+                //System.out.println("Adresse : " + p.getAddress());
+                //System.out.println("Port : " + p.getPort());
                 
                 new Thread(new Connexion(p.getAddress(), p.getPort())).start();
             }
