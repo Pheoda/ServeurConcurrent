@@ -2,20 +2,15 @@ package tp2;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Connexion implements Runnable {
+public class Connexion extends UDP implements Runnable {
 
-    private DatagramSocket socket;
-
-    public Connexion(InetAddress adresse, int port) throws IOException {
-        socket = new DatagramSocket();
-        String text = "Connexion client : " + adresse + ":" + port;
-        byte[] data = text.getBytes();
-        socket.send(new DatagramPacket(data, data.length, adresse, port));
+    public Connexion(InetAddress adress, int port) {
+        super(findPortOpen(1024, 65535));
+        this.send("OLLEH",adress, port);
     }
 
     @Override

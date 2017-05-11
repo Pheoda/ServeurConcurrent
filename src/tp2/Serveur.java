@@ -5,52 +5,36 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class Serveur implements Runnable {
+public class Serveur extends UDP implements Runnable{
 
-    private int port;
-    private ArrayList<Connexion> connexions;
 
-    public Serveur() throws IOException {
-        boolean foundPort = false;
-		  
-        connexions = new ArrayList<Connexion>();
-
-        for(port = 1024; port <= 65535 && !foundPort; port++)
-        {
-            try {
-                ServerSocket test = new ServerSocket(port);
-                foundPort = true;
-                System.out.println("Port trouvé : " + port);
-            } catch (IOException e) {
-            }
-        }
-        System.out.println("Serveur initialisé au port : " + port);
+    public Serveur() {
+        super(PORT);
+        
+        System.out.println("Serveur initialisé !");
 
     }
-    public int getPort() {
-        return port;
-    }
+    
 
-    @Override
     public void run() {
-        try {
-            DatagramSocket socket = new DatagramSocket(port);
+
             while (true) {
-                byte[] data = new byte[1024];
-                DatagramPacket p = new DatagramPacket(data, data.length);
-                socket.receive(p);
+                this.receive();
+                System.out.println("Nouveau Client sur " + dp.getAddress() + ":" + dp.getPort());
+                System.out.println(new String(dp.getData()));
                 
-                //System.out.println("Adresse : " + p.getAddress());
-                //System.out.println("Port : " + p.getPort());
+                new Thread(new Connexion(dp.getAddress(), dp.getPort())).start();
                 
-                Connexion co = new Connexion(p.getAddress(), p.getPort());
-                connexions.add(co);
-                new Thread(co).start();
             }
 
-        } catch (IOException e) {
-            System.err.println("Erreur : " + e);
-        }
+        
     }
+    
+   public static void main(String[] args) {
+       Serveur s = new Serveur();
+        new Thread(s).start();
+   }
 }

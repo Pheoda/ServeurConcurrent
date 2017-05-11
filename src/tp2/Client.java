@@ -2,52 +2,77 @@ package tp2;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
-import java.net.DatagramSocket;
+import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.MulticastSocket;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class Client {
-    private InetAddress ip;
-    private int port;
-    private DatagramSocket socket;
+
+public class Client extends UDP implements Runnable{
     
+    private InetAddress addCo;
+    private int portCo;
+    //classic connexion
     public Client() {
-
+        super();
     }
     
-    public void connecter(InetAddress adresse, int port) throws IOException {
-        socket = new DatagramSocket();
-        byte[] data = new byte[512];
-        socket.send(new DatagramPacket(data, data.length, adresse, port));
-        
-        //System.out.println(socket.getLocalAddress() + " : " + socket.getLocalPort());
-        //System.out.println("Socket client connexion envoyée");
-        DatagramPacket p = new DatagramPacket(data, data.length);
-        socket.receive(p);
-        this.ip = p.getAddress();
-        this.port = p.getPort();
-        System.out.println(new String(data));
-    }
+ 
+    @Override
+    public void run() {
+        int answer;
+        this.connecter();
+        this.joinAGroup("224.0.0.3", 8888);
+        while(true) {
+            try {
+                Scanner scan = new Scanner(System.in);
+                System.out.println("Que voulez-vous faire ?");
+                System.out.println("1 - envoyer un message au groupe");
+                System.out.println("2 - quitter le groupe");
+                answer = scan.nextInt();
+                switch(answer) {
+                    case 1 :
+                        Scanner scan2 = new Scanner(System.in);
+                        String msg;
+                        System.out.println("Taper votre message\n");
+                        msg = scan2.nextLine();
+                        this.sendGroup(msg);
+                        this.receiveGroup();
+                        break;
+                    case 2 :
+                        this.ms.leaveGroup(this.group);
+                        break;
+          
+                }
 
-    public void envoyer(String message) throws IOException {
-        byte[] data = message.getBytes();
-        socket.send(new DatagramPacket(data, data.length, this.ip, this.port));
-        //System.out.println("Socket client envoyée");
+            } catch (IOException ex) {
+                System.err.println("Impossible de quitter le groupe");
+               // System.exit(1);
+            }
+        }
     }
+    
+    public void connecter() {
+        this.send("HELLO", ia, PORT);
+        this.receive();
+        System.out.println(new String(dp.getData()));
+    }
+    
     
     public void fermer() throws IOException {
         socket.close();
         System.out.println("Fin client !");
     }
     
-    public void main(String[] args) throws IOException {
-        // Demande message à envoyer
-        String message = "";
-        do
-        {
-            
-            System.out.println("Envoi message (STOP pour arreter): ");
-        }while(message != "STOP");
-        fermer();
+   
+    
+    public static void main(String[] args) {
+      Client c1 = new Client();
+      
+      new Thread(c1).start();
+      
     }
 
 }
