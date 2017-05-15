@@ -1,10 +1,5 @@
 package tp2;
 
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.MulticastSocket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static tp2.UDP.PORT;
@@ -12,8 +7,6 @@ import static tp2.UDP.PORT;
 
 public class Client2 extends UDP implements Runnable{
     
-    private InetAddress addCo;
-    private int portCo;
     //classic connexion
     public Client2() {
         super();
@@ -24,8 +17,8 @@ public class Client2 extends UDP implements Runnable{
     public void run() {
         this.connecter();
         this.joinAGroup("224.0.0.3", 8888);
+        System.out.println("Client is running...");
         while(true) {
-            System.out.println("Client is running...");
             this.receiveGroup();
             System.out.println("message du groupe : " + new String(dp.getData()));
             try {
@@ -44,15 +37,7 @@ public class Client2 extends UDP implements Runnable{
       /*  System.out.println("port " + p.getPort());
         System.out.println(new String(data));*/
     }
-    
-    
-    public void fermer() throws IOException {
-        socket.close();
-        System.out.println("Fin client !");
-    }
-    
-   
-    
+        
     public static void main(String[] args) {
       Client2 c1 = new Client2();
       

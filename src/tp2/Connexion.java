@@ -8,14 +8,14 @@ import java.util.logging.Logger;
 
 public class Connexion extends UDP implements Runnable {
 
-    public Connexion(InetAddress adress, int port) {
+    public Connexion(InetAddress address, int port) {
         super(findPortOpen(1024, 65535));
-        this.send("OLLEH",adress, port);
+        this.send("OLLEH", address, port);
     }
 
     @Override
     public void run() {
-        while(true) {
+        while(loop) {
             byte[] data = new byte[1024];
             
             try {
@@ -23,11 +23,12 @@ public class Connexion extends UDP implements Runnable {
             } catch (IOException ex) {
                 Logger.getLogger(Connexion.class.getName()).log(Level.SEVERE, null, ex);
             }
-            System.out.println(new String(data));
+            
+            if(new String(dp.getData()) == "FERMETURE")
+                loop = false;
+            else
+                System.out.println(new String(data));
         }
-    }
-    
-    public void fermer() {
-        socket.close();
+        this.fermer();
     }
 }

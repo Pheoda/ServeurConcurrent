@@ -1,19 +1,11 @@
 package tp2;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.MulticastSocket;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 public class Client extends UDP implements Runnable{
     
-    private InetAddress addCo;
-    private int portCo;
     //classic connexion
     public Client() {
         super();
@@ -25,12 +17,14 @@ public class Client extends UDP implements Runnable{
         int answer;
         this.connecter();
         this.joinAGroup("224.0.0.3", 8888);
-        while(true) {
+        while(loop) {
             try {
                 Scanner scan = new Scanner(System.in);
                 System.out.println("Que voulez-vous faire ?");
                 System.out.println("1 - envoyer un message au groupe");
                 System.out.println("2 - quitter le groupe");
+                System.out.println("3 - envoyer un message au serveur");
+                System.out.println("4 - quitter connexion");
                 answer = scan.nextInt();
                 switch(answer) {
                     case 1 :
@@ -44,7 +38,17 @@ public class Client extends UDP implements Runnable{
                     case 2 :
                         this.ms.leaveGroup(this.group);
                         break;
-          
+                    case 3 :
+                        Scanner scanMsg = new Scanner(System.in);
+                        String msgServeur;
+                        System.out.println("Taper votre message\n");
+                        msgServeur = scanMsg.nextLine();
+                        this.send(msgServeur, ia, portConnexion);
+                        break;
+                    case 4:
+                        loop = false;
+                        this.send("FERMETURE", ia, PORT);
+                        break;
                 }
 
             } catch (IOException ex) {
@@ -52,22 +56,16 @@ public class Client extends UDP implements Runnable{
                // System.exit(1);
             }
         }
+        this.fermer();
     }
     
     public void connecter() {
         this.send("HELLO", ia, PORT);
         this.receive();
+        portConnexion = dp.getPort();
         System.out.println(new String(dp.getData()));
     }
-    
-    
-    public void fermer() throws IOException {
-        socket.close();
-        System.out.println("Fin client !");
-    }
-    
-   
-    
+
     public static void main(String[] args) {
       Client c1 = new Client();
       

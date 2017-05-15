@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package tp2;
 
 import java.io.IOException;
@@ -12,7 +7,6 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 
 /**
  *
@@ -25,6 +19,8 @@ public class UDP {
     //protected static ArrayList<InetAddress> groups = new ArrayList<>();
     protected MulticastSocket ms;
     protected InetAddress group;
+    protected boolean loop = true;
+    protected int portConnexion;
 
     
     final public static String IP = "127.0.0.1";
@@ -138,5 +134,9 @@ public class UDP {
 
         }
         return 0;
+    }
+    
+    protected void fermer() {
+        socket.close();
     }
 }
